@@ -30,4 +30,32 @@ def joblist(request):
         'data': data
     })
 
+# get the detail of a job
+def jobdetail(request, job_id):
+    try:
+        job = Job.objects.get(pk=job_id)
+
+        data = {}
+        data['job_type'] = JobTypes[job.job_type][1]
+        data['job_city'] = Cities[job.job_city][1]
+        data['job_name'] = job.job_name
+        data['job_responsibility'] = job.job_responsibility
+        data['job_requirement'] = job.job_requirement
+        data['creator'] = str(job.creator)
+        data['created_date'] = job.created_date
+        data['modified_date'] = job.modified_date
+        return JsonResponse({
+            'status': 200,
+            'message': 'success',
+            'data': data
+        })
+
+    except Job.DoesNotExist:
+        return JsonResponse({
+            'status': 404,
+            'message': 'Job does not exist'
+        })
+
+
+
 
