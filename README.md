@@ -15,5 +15,5 @@ Assumption: 1. Some processes can be executed offline: candidates can send their
 <br>
 git commit id:
 <br>
-New Requirement: 1. HR can import user info into system from csv file and outport info from system to csv file; 2. Employee can login through OpenDLAP account; 3. different roles: hr/interviewer with different authentications
+New Requirement: 1. HR can import user info into system from csv file and export info from system to csv file; 2. Employee can login through OpenDLAP account; 3. different roles: hr/interviewer with different authentications
 

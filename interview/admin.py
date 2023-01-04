@@ -3,6 +3,10 @@ from interview.models import Candidate
 from django.http import HttpResponse
 import csv
 from datetime import datetime
+import logging
+
+# customize the log
+logger = logging.getLogger(__name__)
 
 # Register your models here.
 exportable_fields = ('username', 'city', 'phone', 'bachelor_school', 'master_school', 'doctor_school', 'degree', 'first_result', 'first_interviewer_user',
@@ -29,6 +33,7 @@ def export_model_as_csv(modeladmin, request, queryset):
             csv_line.append(field_value)
         writer.writerow(csv_line)
 
+    logger.info("%s exported %s records" % (request.user, len(queryset)))
     return response
 
 

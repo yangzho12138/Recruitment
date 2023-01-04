@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,4 +153,47 @@ LDAP_AUTH_CONNECTION_PASSWORD = "admin"
 
 # two ways for users to login the system
 AUTHENTICATION_BACKENDS = {"django_python3_ldap.auth.LDAPBackend", "django.contrib.auth.backends.ModelBackend"}
+
+# Log
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    # 1 Component formatters: define the log format
+    'formatters': {
+        'simple': {  # formatter name
+            'format': '%(asctime)s %(name)-12s %(lineno)d %(levelname)-8s %(message)s',
+        },
+    },
+    # 2 Component Handler: how to deal with each log -> print to console/ send to email/ write to file
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+
+        'mail_admins': { # Add Handler for mail_admins for `warning` and above
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+        'file': {
+            #'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), 'recruitment.admin.log'),
+        },
+    },
+    #
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
+    },
+    # 3 Component Loggers: processing class/object of logging, one logger can have several handlers
+    'loggers': {
+        "django_python3_ldap": {
+            "handlers": ["console", "file"],  # based on handlers component
+            "level": "DEBUG",
+        },
+    },
+    # 4 Component Filters, based on Loggers/Handler component --> has default config
+}
 
