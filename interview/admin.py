@@ -9,6 +9,15 @@ class CandidateAdmin(admin.ModelAdmin):
         "second_result", "second_interviewer_user", "hr_score", "hr_result", "last_editor"
     )
 
+    # search function
+    search_fields = ('username', 'phone', 'email', "bachelor_school", "master_school", "doctor_school")
+
+    # filter function
+    list_filter = ('city', 'first_result', 'second_result', 'hr_result', 'first_interviewer_user', 'second_interviewer_user', 'hr_interviewer_user')
+
+    # showed in order
+    ordering = ('hr_result', 'second_result', 'first_result')
+
     # show info with grouping
     # () several fields -> these fields will be shown in one line
     fieldsets = (
@@ -17,5 +26,7 @@ class CandidateAdmin(admin.ModelAdmin):
         ('Second Round Interview', {'fields': (("second_score", "second_learning_ability", "second_professional_competency", "second_pursue_of_excellence", "second_communication_ability", "second_pressure_score"), "second_advantage", "second_disadvantage", ("second_result", "second_recommend_position", "second_interviewer_user", "second_remark"))}),
         ('HR Interview', {'fields': (("hr_score", "hr_responsibility", "hr_communication_ability", "hr_logic_ability", "hr_potential", "hr_stability"), "hr_advantage", "hr_disadvantage", ("hr_result", "hr_interviewer_user", "hr_remark"))})
     )
+
+
 
 admin.site.register(Candidate, CandidateAdmin)
