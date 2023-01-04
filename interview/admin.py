@@ -1,13 +1,45 @@
 from django.contrib import admin
 from interview.models import Candidate
+from django.http import HttpResponse
+import csv
+from datetime import datetime
 
 # Register your models here.
+exportable_fields = ('username', 'city', 'phone', 'bachelor_school', 'master_school', 'doctor_school', 'degree', 'first_result', 'first_interviewer_user',
+                     'second_result', 'second_interviewer_user', 'hr_result', 'hr_score', 'hr_remark', 'hr_interviewer_user')
+
+def export_model_as_csv(modeladmin, request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    field_list = exportable_fields
+    response['Content-Disposition'] = 'attachment; filename=%s-list-%s.csv' % ('recruitment-candidates', datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
+
+    # csv header
+    writer = csv.writer(response)
+    writer.writerow(
+        # use verbose name of each filed as the header of csv
+        [queryset.model._meta.get_field(f).verbose_name.title() for f in field_list],
+    )
+
+    # print(queryset)  <QuerySet [<Candidate: Yuan Su>, <Candidate: Zhiyuan Yu>, <Candidate: ﻿Yuankai Wang>, <Candidate: Yang Zhou>]>
+    for obj in queryset:
+        csv_line = []
+        for field in field_list:
+            field_object = queryset.model._meta.get_field(field)
+            field_value = field_object.value_from_object(obj)
+            csv_line.append(field_value)
+        writer.writerow(csv_line)
+
+    return response
+
+
 class CandidateAdmin(admin.ModelAdmin):
     exclude = ('creator', 'created_date', 'modified_date')
     list_display = (
         "username", "city", "first_score", "first_result", "first_interviewer_user",
         "second_result", "second_interviewer_user", "hr_score", "hr_result", "last_editor"
     )
+
+    actions = (export_model_as_csv, )
 
     # search function
     search_fields = ('username', 'phone', 'email', "bachelor_school", "master_school", "doctor_school")

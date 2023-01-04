@@ -120,6 +120,8 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ### LDAP
+# pip install django-python3-ldap
+# import all the users in LDAP: python ./manage.py ldap_sync_users
 
 # URL of LDAP Server
 LDAP_AUTH_URL = "ldap://localhost:389"
@@ -145,7 +147,7 @@ LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
 # The LDAP username and password of a user for querying the LDAP database for a user details
 # If None, then the authenticated user will be used for querying,
 # and the 'ldap_sync_users' command will perform an anonymous query
-LDAP_AUTH_CONNECTION_USERNAME = "admin" # cn
+LDAP_AUTH_CONNECTION_USERNAME = "admin"  # cn
 LDAP_AUTH_CONNECTION_PASSWORD = "admin"
 
 # two ways for users to login the system
