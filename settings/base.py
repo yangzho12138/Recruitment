@@ -148,8 +148,8 @@ LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
 # The LDAP username and password of a user for querying the LDAP database for a user details
 # If None, then the authenticated user will be used for querying,
 # and the 'ldap_sync_users' command will perform an anonymous query
-LDAP_AUTH_CONNECTION_USERNAME = "admin"  # cn
-LDAP_AUTH_CONNECTION_PASSWORD = "admin"
+LDAP_AUTH_CONNECTION_USERNAME = None
+LDAP_AUTH_CONNECTION_PASSWORD = None
 
 # two ways for users to login the system
 AUTHENTICATION_BACKENDS = {"django_python3_ldap.auth.LDAPBackend", "django.contrib.auth.backends.ModelBackend"}
