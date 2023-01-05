@@ -44,6 +44,37 @@ class CandidateAdmin(admin.ModelAdmin):
         "second_result", "second_interviewer_user", "hr_score", "hr_result", "last_editor"
     )
 
+    # specify different authentication to different groups
+    def get_group_name(self, user):
+        group_name = []
+        for g in user.groups.all():
+            group_name.append(g.name)
+        return group_name
+
+    # built-in functions -> readonly-fields = ()
+    def get_readonly_fields(self, request, obj):
+        group_name = self.get_group_name(request.user)
+
+        if 'interviewer' in group_name:
+            logger.info("%s is in interviewer group" % request.user.username)
+            return ("first_interviewer_user", "second_interviewer_user",)
+        return ()
+
+    # can be edit in the list page (a easier way to edit than go into the detail page)
+    # no built-in function
+    def get_list_editable(self, request):
+        group_name = self.get_group_name(request.user)
+
+        if 'hr' in group_name or request.user.is_superuser:
+            return ("first_interviewer_user", "second_interviewer_user",)
+        return ()
+
+    # override list_editable
+    def get_changelist_instance(self, request):
+        self.list_editable = self.get_list_editable(request)
+        return super(CandidateAdmin, self).get_changelist_instance(request)
+
+
     actions = (export_model_as_csv, )
 
     # search function
