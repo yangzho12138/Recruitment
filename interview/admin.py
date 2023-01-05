@@ -6,6 +6,7 @@ from datetime import datetime
 import logging
 from interview.candidate_fieldset import default_fieldsets, default_fieldsets_first, default_fieldsets_second
 from django.db.models import Q
+from interview import dingtalk
 
 # customize the log
 logger = logging.getLogger(__name__)
@@ -13,6 +14,17 @@ logger = logging.getLogger(__name__)
 # Register your models here.
 exportable_fields = ('username', 'city', 'phone', 'bachelor_school', 'master_school', 'doctor_school', 'degree', 'first_result', 'first_interviewer_user',
                      'second_result', 'second_interviewer_user', 'hr_result', 'hr_score', 'hr_remark', 'hr_interviewer_user')
+
+
+# notify the interviewer
+def notify_interviewer(modeladmin, request, queryset):
+    candidates = ""
+    interviewers = ""
+    for obj in queryset:
+        candidates = obj.username + ";" + candidates
+        interviewers = obj.first_interviewer_user.username + ";" + interviewers
+    dingtalk.send("Candidates %s, congratulations, you are in the intesrview phase, the interviewers are %s, please prepare the interview fully" % (candidates, interviewers))
+
 
 def export_model_as_csv(modeladmin, request, queryset):
     response = HttpResponse(content_type='text/csv')
@@ -85,8 +97,7 @@ class CandidateAdmin(admin.ModelAdmin):
         self.list_editable = self.get_list_editable(request)
         return super(CandidateAdmin, self).get_changelist_instance(request)
 
-
-    actions = (export_model_as_csv, )
+    actions = (export_model_as_csv, notify_interviewer)
 
     # search function
     search_fields = ('username', 'phone', 'email', "bachelor_school", "master_school", "doctor_school")
@@ -118,8 +129,6 @@ class CandidateAdmin(admin.ModelAdmin):
             # database and/or operation
             Q(first_interviewer_user=request.user) | Q(second_interviewer_user=request.user)
         )
-
-
 
 
 admin.site.register(Candidate, CandidateAdmin)
