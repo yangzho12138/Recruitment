@@ -4,6 +4,8 @@ from django.http import HttpResponse
 import csv
 from datetime import datetime
 import logging
+from interview.candidate_fieldset import default_fieldsets, default_fieldsets_first, default_fieldsets_second
+from django.db.models import Q
 
 # customize the log
 logger = logging.getLogger(__name__)
@@ -37,12 +39,21 @@ def export_model_as_csv(modeladmin, request, queryset):
     return response
 
 
+export_model_as_csv.allowed_permissions = ('export', )
+
+
 class CandidateAdmin(admin.ModelAdmin):
     exclude = ('creator', 'created_date', 'modified_date')
     list_display = (
         "username", "city", "first_score", "first_result", "first_interviewer_user",
         "second_result", "second_interviewer_user", "hr_score", "hr_result", "last_editor"
     )
+
+    # has_[permission_name]_permission
+    # Now, admin can add/cancel the permission in group part of the system
+    def has_export_permission(self, request):
+        opts = self.opts
+        return request.user.has_perm('%s.%s' % (opts.app_label, "export"))
 
     # specify different authentication to different groups
     def get_group_name(self, user):
@@ -61,7 +72,7 @@ class CandidateAdmin(admin.ModelAdmin):
         return ()
 
     # can be edit in the list page (a easier way to edit than go into the detail page)
-    # no built-in function
+    # not built-in function
     def get_list_editable(self, request):
         group_name = self.get_group_name(request.user)
 
@@ -86,14 +97,28 @@ class CandidateAdmin(admin.ModelAdmin):
     # showed in order
     ordering = ('hr_result', 'second_result', 'first_result')
 
-    # show info with grouping
-    # () several fields -> these fields will be shown in one line
-    fieldsets = (
-        (None, {'fields': ("userid", ("username", "city", "phone", "email"), ("apply_position", "address", "gender", "candidate_remark"), ("bachelor_school", "master_school", "doctor_school"), ("major", "degree"), ("test_score_of_general_ability", "test_score_of_professional_ability"), "last_editor")}),
-        ('First Round Interview', {'fields': (("first_score", "first_learning_ability", "first_professional_competency"), "first_advantage", "first_disadvantage", ("first_result", "first_recommend_position", "first_interviewer_user", "first_remark"))}),
-        ('Second Round Interview', {'fields': (("second_score", "second_learning_ability", "second_professional_competency", "second_pursue_of_excellence", "second_communication_ability", "second_pressure_score"), "second_advantage", "second_disadvantage", ("second_result", "second_recommend_position", "second_interviewer_user", "second_remark"))}),
-        ('HR Interview', {'fields': (("hr_score", "hr_responsibility", "hr_communication_ability", "hr_logic_ability", "hr_potential", "hr_stability"), "hr_advantage", "hr_disadvantage", ("hr_result", "hr_interviewer_user", "hr_remark"))})
-    )
+    # different roles can see different fieldsets
+    def get_fieldsets(self, request, obj):
+        group_name = self.get_group_name(request.user)
+
+        if 'interviewer' in group_name and obj.first_interviewer_user == request.user and obj.second_interviewer_user != request.user:
+            return default_fieldsets_first
+        if 'interviewer' in group_name and obj.second_interviewer_user == request.user:
+            return default_fieldsets_second
+        return default_fieldsets
+
+    # different roles can see different dataset (they can only see the relevant candidate in the list page)
+    def get_queryset(self, request):
+        qs = super(CandidateAdmin, self).get_queryset(request) # all dataset
+
+        group_name = self.get_group_name(request.user)
+        if request.user.is_superuser or 'hr' in group_name:
+            return qs
+        return Candidate.objects.filter(
+            # database and/or operation
+            Q(first_interviewer_user=request.user) | Q(second_interviewer_user=request.user)
+        )
+
 
 
 

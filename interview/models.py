@@ -101,6 +101,11 @@ class Candidate(models.Model):
         db_table = 'candidate'
         verbose_name = 'candidate'
         verbose_name_plural = 'candidates'
+        # admin.py action permission
+        permissions = [
+            ("export", "Can export candidate list"),
+            ("notify", "notify interviewer for candidate review"),
+        ]
 
     # Python 2 transfer object to str, no __unicode__() -> use  __str__()
     def __unicode__(self):
