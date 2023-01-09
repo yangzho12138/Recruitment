@@ -1,7 +1,7 @@
 from django.urls import re_path as url
-from jobs import views
+from jobs.views import JobView, JobsView
 
 urlpatterns = [
-    url(r'^joblist/', views.joblist),
-    url(r'job/(?P<job_id>\d+)/$', views.jobdetail)
+    url(r'^joblist/', JobView.as_view()),
+    url(r'job/(?P<job_id>\d+)/$', JobsView.as_view())
 ]
