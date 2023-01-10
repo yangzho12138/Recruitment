@@ -3,11 +3,17 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
+import { logout } from "../actions/userActions";
 
 export const Header = () => {
 
     const userLogin = useSelector(state => state.userLogin)
     const { loading, error, userInfo } = userLogin
+
+    const dispatch = useDispatch()
+    const logoutHandler = () => {        
+        dispatch(logout())
+    }
 
     return(
         <header>
@@ -26,7 +32,7 @@ export const Header = () => {
                 {userInfo ? (
                     <Nav className="me-end">
                         <Nav.Link href="/">Welcome {userInfo.username}</Nav.Link>
-                        <Nav.Link href="/">Signout</Nav.Link>
+                        <Nav.Link onClick={logoutHandler}>Signout</Nav.Link>
                     </Nav>
                 ) : (
                     <Nav className="me-end">

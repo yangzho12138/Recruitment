@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # "grappelli",
     "rest_framework",
     "rest_framework_simplejwt",
+    # pip install django-cors-headers
     'corsheaders',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -57,8 +58,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # cors
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # cors
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
