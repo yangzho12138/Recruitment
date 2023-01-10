@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link } from 'react-router-dom';
-import { useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
+import { register } from '../actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const Register = () => {
     const [username, setUsername] = useState('')
@@ -11,10 +12,25 @@ export const Register = () => {
     const [password, setPassword] = useState('')
     const [passwordConfirm, setPasswordConfirm] = useState('')
 
+    const navigate = useNavigate()
+
+    const userRegister = useSelector(state => state.userRegister)
+    const { error } = userRegister
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
+
+    useEffect(() => {
+        if(userInfo){
+            navigate('/')
+        }
+    },[userInfo, navigate])
+
+    const dispatch = useDispatch()
     const submitHandler = (e) => {
         e.preventDefault();
-        
-        
+
+        dispatch(register(username, email, password, passwordConfirm))
     }
 
     return(
@@ -49,6 +65,12 @@ export const Register = () => {
                     <Button variant="primary" type='submit' className='my-3'>
                         Register
                     </Button>
+                    <br/>
+                    {error && (
+                        <div style={{color: 'red'}}>
+                            {error}
+                        </div>
+                    )}
                 </Form>
             </Card.Body>
         </Card>

@@ -52,6 +52,12 @@ export const Signin = () => {
                     <Button variant="primary" type='submit' className='my-3'>
                         Signin
                     </Button>
+                    <br/>
+                    {error && (
+                        <div style={{color: 'red'}}>
+                            {error}
+                        </div>
+                    )}
                 </Form>
             </Card.Body>
         </Card>

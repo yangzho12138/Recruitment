@@ -64,6 +64,7 @@ MIDDLEWARE = [
     # cors
 ]
 
+# cors
 CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "recruitment.urls"
