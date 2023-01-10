@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from django.contrib.auth.models import User
 
@@ -34,4 +35,18 @@ class UserView(APIView):
         return Response({
             'status': 201,
             'message': 'register successfully'
+        })
+
+class InfoView(APIView):
+    permission_classes = ([IsAuthenticated])
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "status": 200,
+            "message": "success",
+            "data": {
+                "username": user.username,
+                "email": user.email
+            }
         })
