@@ -19,7 +19,7 @@ export const Header = () => {
         <header>
             <Navbar bg="dark" variant="dark">
                 <Container>
-                <Navbar.Brand href="#home">
+                <Navbar.Brand href="/">
                     <img
                     alt=""
                     src="https://th.bing.com/th/id/OIP.aeHoebZ2cILe37CThBPCMwAAAA?w=146&h=150&c=7&r=0&o=5&dpr=2&pid=1.7"

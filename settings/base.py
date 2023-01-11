@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "interview.performance.performance_logger_middleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -196,6 +197,11 @@ LOGGING = {
             'formatter': 'simple',
             'filename': os.path.join(os.path.dirname(BASE_DIR), 'recruitment.admin.log'),
         },
+        'performance': {
+            'class': 'logging.FileHandler',
+            'formatter': 'simple',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), 'recruitment.performance.log'),
+        }
     },
     #
     'root': {
@@ -208,6 +214,12 @@ LOGGING = {
             "handlers": ["console", "file"],  # based on handlers component
             "level": "DEBUG",
         },
+    # corresponding to logger = logging.getLogger(__name__) in interviews.performance.py __name__== interview.performance
+        "interview.performance": {
+            "handlers": ["console", "performance"],
+            "level": "INFO",
+            "propagate": False,
+        }
     },
     # 4 Component Filters, based on Loggers/Handler component --> has default config
 }

@@ -7,6 +7,7 @@ import logging
 from interview.candidate_fieldset import default_fieldsets, default_fieldsets_first, default_fieldsets_second
 from django.db.models import Q
 from interview import dingtalk
+from django.contrib import messages
 
 # customize the log
 logger = logging.getLogger(__name__)
@@ -24,7 +25,8 @@ def notify_interviewer(modeladmin, request, queryset):
         candidates = obj.username + ";" + candidates
         interviewers = obj.first_interviewer_user.username + ";" + interviewers
     dingtalk.send("Candidates %s, congratulations, you are in the intesrview phase, the interviewers are %s, please prepare the interview fully" % (candidates, interviewers))
-
+    messages.add_message(request, messages.INFO,
+                         'Send notification successfully')  # message on webpage
 
 def export_model_as_csv(modeladmin, request, queryset):
     response = HttpResponse(content_type='text/csv')
