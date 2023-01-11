@@ -8,7 +8,7 @@ import { logout } from "../actions/userActions";
 export const Header = () => {
 
     const userLogin = useSelector(state => state.userLogin)
-    const { loading, error, userInfo } = userLogin
+    const { userInfo } = userLogin
 
     const dispatch = useDispatch()
     const logoutHandler = () => {        
@@ -31,7 +31,7 @@ export const Header = () => {
                 </Navbar.Brand>
                 {userInfo ? (
                     <Nav className="me-end">
-                        <Nav.Link href="/">Welcome {userInfo.username}</Nav.Link>
+                        <Nav.Link href="/resume">Welcome {userInfo.username}</Nav.Link>
                         <Nav.Link onClick={logoutHandler}>Signout</Nav.Link>
                     </Nav>
                 ) : (
