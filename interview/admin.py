@@ -10,6 +10,7 @@ from interview import dingtalk
 from django.contrib import messages
 from users.models import Resume
 from django.utils.safestring import mark_safe
+from .tasks import send_dingtalk_message
 
 # customize the log
 logger = logging.getLogger(__name__)
@@ -23,10 +24,12 @@ exportable_fields = ('username', 'city', 'phone', 'bachelor_school', 'master_sch
 def notify_interviewer(modeladmin, request, queryset):
     candidates = ""
     interviewers = ""
+    print(queryset)
     for obj in queryset:
         candidates = obj.username + ";" + candidates
         interviewers = obj.first_interviewer_user.username + ";" + interviewers
-    dingtalk.send("Candidates %s, congratulations, you are in the intesrview phase, the interviewers are %s, please prepare the interview fully" % (candidates, interviewers))
+    # async task
+    send_dingtalk_message.delay("Candidates %s, congratulations, you are in the intesrview phase, the interviewers are %s, please prepare the interview fully" % (candidates, interviewers))
     messages.add_message(request, messages.INFO,
                          'Send notification successfully')  # message on webpage
 

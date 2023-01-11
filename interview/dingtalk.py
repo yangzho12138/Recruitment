@@ -11,4 +11,4 @@ def send(message, at_mobiles=[]):
     chatBot = DingtalkChatbot(webhook)
 
     # @ all
-    chatBot.send_text(msg=('Interview Notification: %s' % message), at_mobiles = at_mobiles)
+    chatBot.send_text(msg=('Attention! Interview Notification: %s' % message), at_mobiles = at_mobiles)
