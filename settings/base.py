@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django_python3_ldap",
     'jobs',
     'interview',
+    'users',
 ]
 
 MIDDLEWARE = [

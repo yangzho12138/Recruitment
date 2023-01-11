@@ -29,6 +29,9 @@ class Candidate(models.Model):
     bachelor_school = models.CharField(max_length=135, blank=True, verbose_name='Undergraduate School or College')
     master_school = models.CharField(max_length=135, blank=True, verbose_name='Graduate School or College')
     doctor_school = models.CharField(max_length=135, blank=True, verbose_name='PHD School or College')
+    bachelor_GPA = models.FloatField(null=True, blank=True, verbose_name="Undergraduate GPA")
+    master_GPA = models.FloatField(null=True, blank=True, verbose_name="Graduate GPA")
+    doctor_GPA = models.FloatField(null=True, blank=True, verbose_name="Phd GPA")
     major = models.CharField(max_length=135, blank=True, verbose_name='Major')
     degree = models.CharField(max_length=135, choices=DEGREE_TYPE, blank=True, verbose_name='Education Level')
 

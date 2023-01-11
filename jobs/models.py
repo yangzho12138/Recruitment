@@ -27,4 +27,3 @@ class Job(models.Model):
     creator = models.ForeignKey(User, verbose_name="Creator", on_delete=models.SET_NULL, null=True)
     created_date = models.DateTimeField(verbose_name="Created Date", default=datetime.now)
     modified_date = models.DateTimeField(verbose_name="Modified Date", default=datetime.now)
-
