@@ -3,8 +3,10 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import { useSelector } from 'react-redux';
+import Button from 'react-bootstrap/Button';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { getResume, updateResume } from '../actions/userActions';
 
 export const Resume = () => {
     const [name, setName] = useState('')
@@ -25,9 +27,64 @@ export const Resume = () => {
     const [workExp, setWorkExp] = useState('')
     const [projExp, setProjExp] = useState('')
 
+    const dispatch = useDispatch()
+
+    const data = {
+        name,
+        email,
+        phone,
+        gender,
+        bornAddress,
+        city,
+        degree,
+        major,
+        UU,
+        UGPA,
+        GU,
+        GGPA,
+        PU,
+        PGPA,
+        intro,
+        workExp,
+        projExp
+    }
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
+
+    const userResumeInfo = useSelector(state => state.userResume)
+    const { userResume } = userResumeInfo
+
+    useEffect(() => {
+        if(userResume){
+            const resume = JSON.parse(userResume)
+            const resumeInfo = resume[0].fields
+            setName(resumeInfo.username)
+            setEmail(resumeInfo.email)
+            setPhone(resumeInfo.phone)
+            setGender(resumeInfo.gender)
+            setBornAddress(resumeInfo.born_address)
+            setCity(resumeInfo.city)
+            setDegree(resumeInfo.degree)
+            setMajor(resumeInfo.major)
+            setUU(resumeInfo.bachelor_school)
+            setUGPA(resumeInfo.bachelor_GPA)
+            setGU(resumeInfo.master_school)
+            setGGPA(resumeInfo.master_GPA)
+            setPU(resumeInfo.doctor_school)
+            setPGPA(resumeInfo.doctor_GPA)
+            setIntro(resumeInfo.candidate_introduction)
+            setWorkExp(resumeInfo.work_experience)
+            setProjExp(resumeInfo.project_experience)
+        }else{
+            dispatch(getResume())
+        }
+    }, [dispatch, userResume])
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+        dispatch(updateResume(data))
+    }
 
     return(
         (userInfo ? (
@@ -35,7 +92,7 @@ export const Resume = () => {
                 <Card className='mx-3 my-3'>
                     <Card.Body>
                         <h2>Online Resume</h2>
-                        <Form>
+                        <Form onSubmit={submitHandler}>
                             <Card className='mx-3 my-3'>
                                 <Card.Body>
                                     <h3>Basic Info</h3>
@@ -50,13 +107,13 @@ export const Resume = () => {
                                             Email*
                                         </Form.Label>
                                         <Col sm="3">
-                                            <Form.Control placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)}/>
+                                            <Form.Control type='email' placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)}/>
                                         </Col>
                                         <Form.Label column sm="1">
                                             Phone*
                                         </Form.Label>
                                         <Col sm="3">
-                                            <Form.Control type="email" placeholder="Enter your phone" value={phone} onChange={e => setPhone(e.target.value)}/>
+                                            <Form.Control placeholder="Enter your phone" value={phone} onChange={e => setPhone(e.target.value)}/>
                                         </Col>
                                     </Form.Group>
                                     <Form.Group  as={Row} className="mb-3">
@@ -150,6 +207,10 @@ export const Resume = () => {
                                         <Form.Control as="textarea" placeholder="Please including project name, time scope, your position and duty" rows={3} value={projExp} onChange={e => setProjExp(e.target.value)}/>
                                     </Form.Group>
                                     * means you must fill out this field
+                                    <br/>
+                                    <Button variant="primary" type='submit' className='my-3'>
+                                        Submit/Update Resume
+                                    </Button>
                                 </Card.Body>
                             </Card>
                         </Form>
