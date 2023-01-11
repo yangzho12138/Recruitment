@@ -24,8 +24,9 @@ from django.utils.translation import gettext as _
 urlpatterns = [
     url(r"^", include("jobs.urls")),
     url(r"^", include("users.urls")),
+    url(r"^", include("interview.urls")),
     # path('grappelli/', include('grappelli.urls')),
     path("admin/", admin.site.urls),
 ]
 
-admin.site.site_header = _("Find Your Job At UIUC")
+admin.site.site_header = _("Opportunity At UIUC")

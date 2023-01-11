@@ -55,7 +55,12 @@ MIDDLEWARE = [
     "interview.performance.PerformanceAndExceptionLoggerMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
+
+    "django.middleware.cache.UpdateCacheMiddleware",  # get data from cache system
+    "django.middleware.common.CommonMiddleware",  # process
+    "django.middleware.cache.FetchFromCacheMiddleware",  # update cache data
+    
+    
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",

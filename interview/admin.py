@@ -8,6 +8,8 @@ from interview.candidate_fieldset import default_fieldsets, default_fieldsets_fi
 from django.db.models import Q
 from interview import dingtalk
 from django.contrib import messages
+from users.models import Resume
+from django.utils.safestring import mark_safe
 
 # customize the log
 logger = logging.getLogger(__name__)
@@ -59,7 +61,7 @@ export_model_as_csv.allowed_permissions = ('export', )
 class CandidateAdmin(admin.ModelAdmin):
     exclude = ('creator', 'created_date', 'modified_date')
     list_display = (
-        "username", "city", "first_score", "first_result", "first_interviewer_user",
+        "username", "get_resume", "city", "first_score", "first_result", "first_interviewer_user",
         "second_result", "second_interviewer_user", "hr_score", "hr_result", "last_editor"
     )
 
@@ -109,6 +111,16 @@ class CandidateAdmin(admin.ModelAdmin):
 
     # showed in order
     ordering = ('hr_result', 'second_result', 'first_result')
+
+    def get_resume(self, obj):
+        if not obj.email:
+            return ""
+        resume = Resume.objects.filter(email=obj.email)
+        if resume and len(resume) > 0:
+            return mark_safe('<a href="/resume/%s" target="_blank"> %s </a>' % (resume[0].id, "Resume"))
+        return ""
+    # "get_resume" become a tag and can be displayed in the list_display
+    get_resume.allow_tags = True
 
     # different roles can see different fieldsets
     def get_fieldsets(self, request, obj):
