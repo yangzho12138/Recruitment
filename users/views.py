@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from users.models import Resume
+from django.core import serializers
 
 from django.contrib.auth.models import User
 
@@ -65,11 +66,11 @@ class ResumeView(APIView):
         degree = data.get("degree", "").strip()
         major = data.get("major", "").strip()
         UU = data.get("UU", "").strip()
-        UGPA = data.get("UGPA", 0)
+        UGPA = data.get("UGPA", "").strip()
         GU = data.get("GU", "").strip()
-        GGPA = data.get("GGPA", 0)
+        GGPA = data.get("GGPA", "").strip()
         PU = data.get("PU", "").strip()
-        PGPA = data.get("PGPA", 0)
+        PGPA = data.get("PGPA", "").strip()
         intro = data.get("intro", "").strip()
         workExp = data.get("workExp", "").strip()
         projExp = data.get("projExp", "").strip()
@@ -78,27 +79,70 @@ class ResumeView(APIView):
                 'status': 400,
                 'message': 'please fill all the needed fields'
             })
-        resume = Resume(
-            username=name,
-            email=email,
-            phone=phone,
-            gender=gender,
-            born_address=bornAddress,
-            city=city,
-            degree=degree,
-            major=major,
-            bachelor_school=UU,
-            bachelor_GPA=UGPA,
-            master_school=GU,
-            master_GPA=GGPA,
-            doctor_school=PU,
-            doctor_GPA=PGPA,
-            candidate_introduction=intro,
-            work_experience=workExp,
-            project_experience=projExp
-        )
-        resume.save()
-        return Response({
-            'status': 201,
-            'message': 'online resume uploaded successfully'
-        })
+        try:
+            resumeExisting = Resume.objects.get(email=email)
+            resumeExisting.username = name or resumeExisting.username
+            resumeExisting.phone = phone or resumeExisting.phone
+            resumeExisting.gender = gender or resumeExisting.gender
+            resumeExisting.born_address = bornAddress or resumeExisting.born_address
+            resumeExisting.city = city or resumeExisting.city
+            resumeExisting.degree = degree or resumeExisting.degree
+            resumeExisting.major = major or resumeExisting.major
+            resumeExisting.bachelor_school = UU or resumeExisting.bachelor_school
+            resumeExisting.bachelor_GPA = UGPA or resumeExisting.bachelor_GPA
+            resumeExisting.master_school = GU or resumeExisting.master_school
+            resumeExisting.master_GPA = GGPA or resumeExisting.master_GPA
+            resumeExisting.doctor_school = PU or resumeExisting.doctor_school
+            resumeExisting.doctor_GPA = PGPA or resumeExisting.doctor_GPA
+            resumeExisting.candidate_introduction = intro or resumeExisting.candidate_introduction
+            resumeExisting.work_experience = workExp or resumeExisting.work_experience
+            resumeExisting.project_experience = projExp or resumeExisting.project_experience
+            resumeExisting.save()
+            return Response({
+                'status': 201,
+                'message': 'online resume updated successfully'
+            })
+        except Resume.DoesNotExist:
+            resume = Resume(
+                username=name,
+                applicant=User.objects.get(email=request.user.email),
+                email=email,
+                phone=phone,
+                gender=gender,
+                born_address=bornAddress,
+                city=city,
+                degree=degree,
+                major=major,
+                bachelor_school=UU,
+                bachelor_GPA=UGPA,
+                master_school=GU,
+                master_GPA=GGPA,
+                doctor_school=PU,
+                doctor_GPA=PGPA,
+                candidate_introduction=intro,
+                work_experience=workExp,
+                project_experience=projExp
+            )
+            resume.save()
+            return Response({
+                'status': 201,
+                'message': 'online resume uploaded successfully',
+            })
+
+
+    def get(self, request):
+        user = request.user
+        try:
+            resume = Resume.objects.get(email=user.email)
+            return Response({
+                'status': 200,
+                'message': 'get resume successfully',
+                'data': serializers.serialize('json', [resume,])
+            })
+        except Resume.DoesNotExist:
+            return Response({
+                'status': 404,
+                'message': 'resume not found'
+            })
+
+
