@@ -29,6 +29,8 @@ class Resume(models.Model):
     work_experience = models.TextField(max_length=1024, blank=True, verbose_name="Work Experience")
     project_experience = models.TextField(max_length=1024, blank=True, verbose_name="Project Experience")
 
+    attachment = models.FileField(upload_to='file/', blank=True, verbose_name='Attachment')
+
     class Meta:
         verbose_name = "Resume"
         verbose_name_plural = "Resume List"

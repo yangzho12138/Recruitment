@@ -121,7 +121,7 @@ class ResumeView(APIView):
                 doctor_GPA=PGPA,
                 candidate_introduction=intro,
                 work_experience=workExp,
-                project_experience=projExp
+                project_experience=projExp,
             )
             resume.save()
             return Response({
@@ -132,8 +132,10 @@ class ResumeView(APIView):
 
     def get(self, request):
         user = request.user
+        print(user)
         try:
             resume = Resume.objects.get(email=user.email)
+            print(resume)
             return Response({
                 'status': 200,
                 'message': 'get resume successfully',
@@ -144,5 +146,30 @@ class ResumeView(APIView):
                 'status': 404,
                 'message': 'resume not found'
             })
+
+
+class uploadFileView(APIView):
+    permission_classes = ([IsAuthenticated])
+
+    def post(self, request):
+        file = request.FILES.get('file')
+        if file:
+            try:
+                resume = Resume.objects.get(email=request.user.email)
+                resume.attachment = file
+                resume.save()
+                return Response({
+                    'status': 200,
+                    'message': 'Upload successfully!'
+                })
+            except Resume.DoesNotExist:
+                return Response({
+                    'status': 404,
+                    'message': 'Please submit online resume before upload attachment!'
+                })
+        return Response({
+            'status': 404,
+            'message': 'Not found file'
+        })
 
 

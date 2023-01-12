@@ -18,7 +18,8 @@ from django.urls import path
 from django.urls import include
 from django.urls import re_path as url
 from django.utils.translation import gettext as _
-
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
@@ -28,5 +29,8 @@ urlpatterns = [
     # path('grappelli/', include('grappelli.urls')),
     path("admin/", admin.site.urls),
 ]
+
+# file upload url
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = _("Opportunity At UIUC")
