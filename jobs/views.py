@@ -5,10 +5,12 @@ from jobs.models import Cities, JobTypes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from django.views.decorators.cache import cache_page
+
 
 # Create your views here.
 class JobView(APIView):
-
+    @cache_page(60 * 5)
     def get(self, request):
         job_list = Job.objects.order_by('job_type')
 
@@ -35,7 +37,7 @@ class JobView(APIView):
 
 
 class JobsView(APIView):
-
+    @cache_page(60 * 5)
     def get(self, request, job_id):
         try:
             job = Job.objects.get(pk=job_id)

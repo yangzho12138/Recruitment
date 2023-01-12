@@ -23,7 +23,8 @@ def enter_interview_process(modeladmin, request, queryset):
 
 class ResumeAdmin(admin.ModelAdmin):
     actions = (enter_interview_process, )
-    list_display = ('username', 'applicant', 'city', 'apply_position', 'bachelor_school', 'master_school', 'doctor_school','major', 'created_date')
+
+    list_display = ('username', 'applicant', 'city', 'apply_position', 'bachelor_school', 'master_school', 'doctor_school','major', 'created_date', 'attachment')
     readonly_fields = ('applicant', 'created_date', 'modified_date',)
     fieldsets = (
         (None, {'fields': ("applicant", ("username", "city", "phone"),("email", "apply_position", "born_address", "gender", ),("bachelor_school", "bachelor_GPA", "master_school", "master_GPA", "doctor_school", "doctor_GPA"), ("major", "degree"), ('created_date', 'modified_date'),"candidate_introduction", "work_experience" ,"project_experience",)}),

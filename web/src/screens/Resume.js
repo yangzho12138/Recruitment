@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getResume, updateResume } from '../actions/userActions';
 
 export const Resume = () => {
@@ -83,9 +83,15 @@ export const Resume = () => {
         }
     }, [dispatch, userInfo, userResume])
 
-    const submitHandler = (e) => {
+    const navigate = useNavigate()
+    const submitHandler = async(e) => {
         e.preventDefault();
-        dispatch(updateResume(data, files))
+        await dispatch(updateResume(data, files))
+
+        if(!error){
+            window.alert("Upload Successfully")
+            navigate('/resume')
+        }
     }
 
     const uploadChange = (e) =>{

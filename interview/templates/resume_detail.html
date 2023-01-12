@@ -1,3 +1,7 @@
+{% load cache %}
+{% cache 600 resume_detail %}
+{% endcache %}
+
 <h1>Personal Resume</h1>
 
 <div>Name: {{ object.username }} </div>
