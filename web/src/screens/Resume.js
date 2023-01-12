@@ -27,6 +27,8 @@ export const Resume = () => {
     const [workExp, setWorkExp] = useState('')
     const [projExp, setProjExp] = useState('')
 
+    const [files, setFiles] = useState(null)
+
     const dispatch = useDispatch()
 
     const data = {
@@ -53,10 +55,10 @@ export const Resume = () => {
     const { userInfo } = userLogin
 
     const userResumeInfo = useSelector(state => state.userResume)
-    const { userResume } = userResumeInfo
+    const { userResume, error } = userResumeInfo
 
     useEffect(() => {
-        if(userResume){
+        if(userInfo && userResume){
             const resume = JSON.parse(userResume)
             const resumeInfo = resume[0].fields
             setName(resumeInfo.username)
@@ -79,11 +81,15 @@ export const Resume = () => {
         }else{
             dispatch(getResume())
         }
-    }, [dispatch, userResume])
+    }, [dispatch, userInfo, userResume])
 
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(updateResume(data))
+        dispatch(updateResume(data, files))
+    }
+
+    const uploadChange = (e) =>{
+        setFiles(e.target.files[0])
     }
 
     return(
@@ -206,23 +212,32 @@ export const Resume = () => {
                                         <Form.Label>Project Experience</Form.Label>
                                         <Form.Control as="textarea" placeholder="Please including project name, time scope, your position and duty" rows={3} value={projExp} onChange={e => setProjExp(e.target.value)}/>
                                     </Form.Group>
-                                    * means you must fill out this field
-                                    <br/>
+                                    <h3>Attachments</h3>
+                                    <Form.Group controlId="formFile" className="mb-3">
+                                        <Form.Label>You can update your attachments here directly (resume, transcript, diploma...)</Form.Label>
+                                        <Form.Control type="file" onChange={uploadChange}/>
+                                        <br />
+                                        <div>* Before upload your attachment, please fill out the online resume</div>
+                                        <div>* Please merge all your documents into one single file</div>
+                                        <div>* Your new submit will overwrite the previous one</div>
+                                        <br/>
+                                        * means you must fill out this field
+                                        <br/>
+                                    </Form.Group>
                                     <Button variant="primary" type='submit' className='my-3'>
                                         Submit/Update Resume
                                     </Button>
+                                    {error  && (
+                                        <div style={{color: 'red'}}>
+                                            {error}
+                                        </div>
+                                    )}
                                 </Card.Body>
                             </Card>
                         </Form>
                     </Card.Body>
                 </Card>
                 <br/>
-                <Card className='mx-3 my-3'>
-                    <Card.Body>
-                        <h2>Upload Resume</h2>
-                        <div> You can update your resume here directly (pdf version)</div>
-                    </Card.Body>
-                </Card>
             </>
         ) : (
             <Card className='mx-3 my-3'>

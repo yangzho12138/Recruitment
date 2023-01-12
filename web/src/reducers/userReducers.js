@@ -1,7 +1,7 @@
 import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT } from "../contants/userConstants"
 import { USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL } from "../contants/userConstants"
 import { USER_RESUME_UPDATE_REQUEST, USER_RESUME_UPDATE_SUCCESS, USER_RESUME_UPDATE_FAIL } from "../contants/userConstants"
-import { USER_RESUME_REQUEST, USER_RESUME_SUCCESS,USER_RESUME_FAIL } from "../contants/userConstants"
+import { USER_RESUME_REQUEST, USER_RESUME_SUCCESS,USER_RESUME_FAIL, USER_RESUME_RESET } from "../contants/userConstants"
 
 export const userLoginReducer = (state = {}, action) => {
     switch(action.type){
@@ -39,6 +39,8 @@ export const userResumeReducer = (state = {}, action) => {
             return { loading: false, userResume: action.payload }
         case USER_RESUME_FAIL:
             return { loading: false, error: action.payload }
+        case USER_RESUME_RESET:
+            return {}
         default:
             return state
     }

@@ -1,4 +1,4 @@
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_RESUME_UPDATE_REQUEST, USER_RESUME_UPDATE_SUCCESS, USER_RESUME_UPDATE_FAIL, USER_RESUME_REQUEST, USER_RESUME_SUCCESS, USER_RESUME_FAIL } from '../contants/userConstants';
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_RESUME_UPDATE_REQUEST, USER_RESUME_UPDATE_SUCCESS, USER_RESUME_UPDATE_FAIL, USER_RESUME_REQUEST, USER_RESUME_SUCCESS, USER_RESUME_FAIL, USER_RESUME_RESET } from '../contants/userConstants';
 import axios from 'axios'
 
 export const login = (username, password) => async(dispatch) => {
@@ -43,7 +43,8 @@ export const login = (username, password) => async(dispatch) => {
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo')
-    dispatch({ type: USER_LOGOUT})
+    dispatch({ type: USER_LOGOUT })
+    dispatch({ type: USER_RESUME_RESET })
 }
 
 export const register = (username, email, password, password_confirm) => async(dispatch) => {
@@ -86,6 +87,7 @@ export const register = (username, email, password, password_confirm) => async(d
 
 export const getResume = () => async(dispatch, getState) => {
     try{
+        console.log('get')
         dispatch({
             type: USER_RESUME_REQUEST
         })
@@ -99,6 +101,7 @@ export const getResume = () => async(dispatch, getState) => {
 
         const response = await axios.get('http://127.0.0.1:8000/api/users/resume', config)
 
+        console.log(response)
         if(response.data.status !== 200){
             throw new Error(response.data.message)
         }
@@ -116,7 +119,7 @@ export const getResume = () => async(dispatch, getState) => {
 }
 
 
-export const updateResume = (resume) => async(dispatch, getState) => {
+export const updateResume = (resume, file) => async(dispatch, getState) => {
     try{
         dispatch({
             type: USER_RESUME_UPDATE_REQUEST
@@ -130,17 +133,36 @@ export const updateResume = (resume) => async(dispatch, getState) => {
             }
         }
 
-        const response = await axios.post('http://127.0.0.1:8000/api/users/resume', resume, config)
+        let response = await axios.post('http://127.0.0.1:8000/api/users/resume', resume, config)
 
+        console.log(response)
         if(response.data.status !== 201){
             throw new Error(response.data.message)
         }
+
+        if(file){
+            config = {
+                headers:{
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${userInfo.token.access}`
+                }
+            }
+    
+            response = await axios.post('http://127.0.0.1:8000/api/users/resume/upload', {
+                file,
+            }, config)
+    
+            console.log(response)
+            if(response.data.status !== 200){
+                throw new Error(response.data.message)
+            }
+        }
+
 
         dispatch({
             type: USER_RESUME_UPDATE_SUCCESS,
         })
     }catch(error){
-        console.log("error", error)
         dispatch({
             type: USER_RESUME_UPDATE_FAIL,
             payload: error.toString()
