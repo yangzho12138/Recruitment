@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "django_python3_ldap",
     "django_celery_beat", # scheduled task
     "django_oss_storage",
-    'jobs',
+    # 'jobs',
+    'jobs.apps.JobsConfig',
     'interview',
     'users',
     "location",
