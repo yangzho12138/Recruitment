@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'jobs',
     'interview',
     'users',
+    "location",
 ]
 
 MIDDLEWARE = [
@@ -104,8 +105,18 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+    },
+    "location":{
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'location',
+        'USER': 'root',
+        'PASSWORD': None,
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
+# multi database router
+DATABASE_ROUTERS = ['settings.router.DatabaseRouter']
 
 
 # Password validation
