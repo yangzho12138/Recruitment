@@ -22,11 +22,14 @@ class Countries(models.Model):
         managed = False
         db_table = 'countries'
 
+    def __str__(self):
+        return self.country_name if self.country_name else ""
+
 
 class States(models.Model):
     id_state = models.IntegerField(primary_key=True)
     state = models.CharField(max_length=40, blank=True, null=True)
-    country_id = models.IntegerField(blank=True, null=True)
+    country_id = models.ForeignKey(Countries, db_column='country_id', blank=True, null=True, on_delete=models.SET_NULL)
     is_active = models.IntegerField(blank=True, null=True)
     sort_order = models.IntegerField(blank=True, null=True)
     lang = models.CharField(max_length=10, blank=True, null=True)
@@ -35,11 +38,14 @@ class States(models.Model):
         managed = False
         db_table = 'states'
 
+    def __str__(self):
+        return self.state if self.state else ""
+
 
 class Cities(models.Model):
     id_city = models.IntegerField(primary_key=True)
     city = models.CharField(max_length=30)
-    state_id = models.IntegerField()
+    state_id = models.ForeignKey(States, db_column='state_id', blank=True, null=True, on_delete=models.SET_NULL)
     is_default = models.IntegerField(blank=True, null=True)
     is_active = models.IntegerField()
     sort_order = models.IntegerField()
@@ -50,3 +56,6 @@ class Cities(models.Model):
     class Meta:
         managed = False
         db_table = 'cities'
+
+    def __str__(self):
+        return self.city if self.city else ""
