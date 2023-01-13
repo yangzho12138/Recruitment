@@ -11,3 +11,73 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.leftTop{
+  background: grey;
+  display: inline-block;
+  width: 30%;
+  height: 40vh;
+  vertical-align: top;
+}
+
+.middleTop{
+  background: #333333;
+  display: inline-block;
+  width: 40%;
+  height: 30vh;
+  vertical-align: top;
+}
+
+.rightTop{
+  background: blue;
+  display: inline-block;
+  width: 30%;
+  height: 40vh;
+  vertical-align: top;
+}
+
+.leftButtom{
+  background: yellow;
+  display: inline-block;
+  width: 30%;
+  height: 40vh;
+  vertical-align: top;
+}
+
+.middleButtom{
+  background: rebeccapurple;
+  display: inline-block;
+  position: relative;
+  width: 40%;
+  height: 50vh;
+  top: -10vh;
+  vertical-align: top;
+}
+
+.rightButtom{
+  background: red;
+  display: inline-block;
+  width: 30%;
+  height: 40vh;
+  vertical-align: top;
+}
+
+.num{
+  width: 50%;
+  float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: gold;
+  font-size: 7vw;
+}
+
+.txt{
+  width: 50%;
+  float: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3vw;
+}

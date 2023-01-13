@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     # 'jobs',
     'jobs.apps.JobsConfig',
     'interview',
-    'users',
+    # 'users',
+    'users.apps.UsersConfig',
     "location",
 ]
 

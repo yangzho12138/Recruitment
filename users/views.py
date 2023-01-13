@@ -5,6 +5,7 @@ from users.models import Resume
 from django.core import serializers
 
 from django.contrib.auth.models import User
+from jobs.producer import publish
 
 # Create your views here.
 class UserView(APIView):

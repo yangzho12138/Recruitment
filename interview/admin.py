@@ -6,11 +6,11 @@ from datetime import datetime
 import logging
 from interview.candidate_fieldset import default_fieldsets, default_fieldsets_first, default_fieldsets_second
 from django.db.models import Q
-from interview import dingtalk
 from django.contrib import messages
 from users.models import Resume
 from django.utils.safestring import mark_safe
 from .tasks import send_dingtalk_message
+from jobs.producer import publish
 
 # customize the log
 logger = logging.getLogger(__name__)
@@ -56,6 +56,21 @@ def export_model_as_csv(modeladmin, request, queryset):
 
     logger.info("%s exported %s records" % (request.user, len(queryset)))
     return response
+
+
+def notify_hired(modeladmin, request, queryset):
+    candidates = ""
+    print(queryset)
+    for obj in queryset:
+        candidates = obj.username + ";" + candidates
+        data = {
+            'email': obj.email
+        }
+        publish("candidate hired", data)
+    # async task
+    send_dingtalk_message.delay("Candidates %s, congratulations, you get the offer!" % candidates)
+    messages.add_message(request, messages.INFO,
+                         'Send notification successfully')  # message on webpage
 
 
 export_model_as_csv.allowed_permissions = ('export', )
@@ -104,7 +119,7 @@ class CandidateAdmin(admin.ModelAdmin):
         self.list_editable = self.get_list_editable(request)
         return super(CandidateAdmin, self).get_changelist_instance(request)
 
-    actions = (export_model_as_csv, notify_interviewer)
+    actions = (export_model_as_csv, notify_interviewer, notify_hired)
 
     # search function
     search_fields = ('username', 'phone', 'email', "bachelor_school", "master_school", "doctor_school")
